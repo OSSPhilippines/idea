@@ -41,9 +41,9 @@ $ npm i -D @ossph/idea
 
 ## How It Works
 
- 1. Describe your idea in a flexible schema format.
- 2. Install plugins to transform your idea to code.
- 3. Generate your platform using the `$ idea` commandline.
+ 1. Describe your idea in a flexible schema format `my.idea`.
+ 2. Install plugins to transform your idea to code `make-database`.
+ 3. Generate your platform using the Idea commandline `$ idea`.
 
 ## Benefits
 
