@@ -62,6 +62,11 @@ to build scalable and flexible software solutions quickly.
  - **Error Reduction**: By automating the code generation, we reduce 
    the chance of human error, ensuring more reliable and stable 
    software.
+ - **Modular**: Use ideas from any vendor or source out your own ideas.
+ - **Pluggable**: Reduce development time significantly by using 
+   existing plugins or publish your own. 
+ - **Closer to AI**: Idea files are perfect training data for AI 
+   projects.
 
 ## Usage
 
