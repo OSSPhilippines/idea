@@ -1,6 +1,5 @@
-# 💡 Idea
-
 <div align="center">
+  <h1>💡 Idea</h1>
   <a href="https://www.npmjs.com/package/@ossph/idea"><img src="https://img.shields.io/npm/v/@ossph/idea.svg?style=flat" /></a>
   <a href="https://github.com/OSSPhilippines/idea/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" /></a>
   <a href="https://github.com/OSSPhilippines/idea/commits/main/"><img src="https://img.shields.io/github/last-commit/OSSPhilippines/idea" /></a>
