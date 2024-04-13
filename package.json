@@ -1,0 +1,20 @@
+{
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "example"
+  ],
+  "scripts": {
+    "build": "yarn build:parser && yarn build:transformer && yarn build:idea && yarn build:example",
+    "build:parser": "yarn --cwd packages/idea-parser build",
+    "build:language": "yarn --cwd packages/idea-language build",
+    "build:transformer": "yarn --cwd packages/idea-transformer build",
+    "build:idea": "yarn --cwd packages/idea build",
+    "build:example": "yarn --cwd example build",
+    "transform": "yarn --cwd example transform -i ./my.idea",
+    "test": "yarn --cwd packages/idea-parser test"
+  },
+  "devDependencies": {
+    "concurrently": "7.6.0"
+  }
+}

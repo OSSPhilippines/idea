@@ -266,7 +266,7 @@ export default function generate({ config, schema, cli }: PluginProps) {
   const lang = config.lang || 'ts';
   // 2. Project
   //find the absolute path from the output config
-  const destination = Loader.absolute(config.output);
+  const destination = Loader.absolute(config.output as string);
   //output directory from the destination
   const dirname = path.dirname(destination);
   //file name from the destination
@@ -313,7 +313,7 @@ export default function generate({ config, schema, cli }: PluginProps) {
       //get enum
       const enums = schema.enum as Record<string, EnumConfig>;
       //get all the possible enum members ("ADMIN", "MANAGER", "USER")
-      const members = Object.keys(enum[name]);
+      const members = Object.keys(enums[name]);
       //add enum using ts-morph
       source.addEnum({
         name: name,

@@ -1,0 +1,19 @@
+{
+	"name": "idea-language-server",
+	"description": "Implementation of idea language server in node.",
+	"version": "0.1.0",
+	"author": "Chris <chris@incept.asia>",
+	"license": "MIT",
+	"engines": {
+		"node": "*"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/OSSPhilippines/idea"
+	},
+	"dependencies": {
+		"@ossph/idea-parser": "0.1.0",
+		"vscode-languageserver": "8.1.0",
+		"vscode-languageserver-textdocument": "1.0.8"
+	}
+}
