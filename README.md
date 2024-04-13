@@ -17,14 +17,51 @@
   <hr />
 </div>
 
-A meta language to express and transform your ideas to reality. 
-It all starts with an idea...
+> A meta language to express and transform your ideas to reality. 
+
+The purpose of this language is to streamline and automate parts of 
+software development that follow a common pattern and therefore can be 
+rendered. Some example code that can be generated including the 
+following.
+
+ - Database calls with any ORM
+ - API, REST, or GraphQL endpoints
+ - React components
+ - TypeScript type safety
+ - Admin pages
+ - more than 70% of the code you produce
+
+> It all starts with an idea...
 
 ## Install
 
 ```bash
 $ npm i -D @ossph/idea
 ```
+
+## How It Works
+
+ 1. Describe your idea in a flexible schema format.
+ 2. Install plugins to transform your idea to code.
+ 3. Generate your platform using the `$ idea` commandline.
+
+## Benefits
+
+This tool is particularly useful for startups and companies looking 
+to build scalable and flexible software solutions quickly. 
+
+ - **Speed and Efficiency**: Dramatically speeds up development time. 
+   What might normally take weeks can be done in minutes, reducing the 
+   cost and time to market.
+ - **Customization and Flexibility**: Ideas can be highly customized. 
+   This means it can be adapted for a wide range of applications, from 
+   simple to complex data structures.
+ - **Scalability**: As your needs grow, the system is designed to 
+   scale seamlessly. You can add more ideas or adjust existing ones 
+   with minimal effort.
+ - **Error Reduction**: By automating the code generation, we reduce 
+   the chance of human error, ensuring more reliable and stable 
+   software.
 
 ## Usage
 
