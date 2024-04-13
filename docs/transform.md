@@ -120,7 +120,7 @@ exports.default = function transform({ config, schema, cli }) {
   const filename = path.basename(destination);
   //start a ts-morph project
   const project = new Project({
-    tsConfigFilePath: path.resolve(__dirname, '../tsconfig.json'),
+    tsConfigFilePath: path.resolve(__dirname, './tsconfig.json'),
     skipAddingFilesFromTsConfig: true,
     compilerOptions: {
       outDir: dirname,
@@ -273,7 +273,7 @@ export default function generate({ config, schema, cli }: PluginProps) {
   const filename = path.basename(destination);
   //start a ts-morph project
   const project = new Project({
-    tsConfigFilePath: path.resolve(__dirname, '../tsconfig.json'),
+    tsConfigFilePath: path.resolve(__dirname, './tsconfig.json'),
     skipAddingFilesFromTsConfig: true,
     compilerOptions: {
       outDir: dirname,
