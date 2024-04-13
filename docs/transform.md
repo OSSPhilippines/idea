@@ -338,5 +338,8 @@ export default function generate({ config, schema, cli }: PluginProps) {
 };
 ```
 
-Now that you understand what plugins do and how they related to ideas, 
+**Learn More:**
+
+ - **Mapping** - Now that you understand what plugins do and how they related to ideas, 
 you can learn more about the specific schema mappings [here](./mapping.md).
+ - **TS-Morph** - Learn more about `ts-morph` [here](./tsmorph.md).
