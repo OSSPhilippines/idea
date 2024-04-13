@@ -14,6 +14,8 @@
   <a href="https://marketplace.visualstudio.com/items?itemName=ossph.idea-langugage">Code Extension</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://github.com/OSSPhilippines/idea/blob/main/docs/contribute.md">Contribute</a>
+  <br />
+  <hr />
 </div>
 
 A meta language to express and transform your ideas to reality. 
