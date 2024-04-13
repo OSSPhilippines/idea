@@ -63,7 +63,7 @@ plugin "@ossph/idea-typescript" {
 // model Product ...
 ```
 
-To use other ideas, you can import them like the following example.
+You can use other ideas, just import them like the following example.
 
 ```js
 //my.idea
