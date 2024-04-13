@@ -21,8 +21,8 @@
 
 The purpose of this language is to streamline and automate parts of 
 software development that follow a common pattern and therefore can be 
-rendered. Some example code that can be generated including the 
-following.
+rendered. Some example code that can be generated using `.idea` files 
+including the following.
 
  - Database calls with any ORM
  - API, REST, or GraphQL endpoints
