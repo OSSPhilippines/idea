@@ -39,7 +39,7 @@ export default class Loader {
     if (cwd === '/') {
       throw new Error('Could not find node_modules');
     }
-    if (fs.existsSync(path.resolve(cwd, 'node_modules/@idea/generator'))) {
+    if (fs.existsSync(path.resolve(cwd, 'node_modules/@ossph/idea-transformer'))) {
       return path.resolve(cwd, 'node_modules');
     }
     return this.modules(path.dirname(cwd));

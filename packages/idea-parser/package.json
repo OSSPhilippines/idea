@@ -1,6 +1,6 @@
 {
   "name": "@ossph/idea-parser",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "description": "Parses ideas to AST and readable JSON.",
   "author": "Chris <chris@incept.asia>",
