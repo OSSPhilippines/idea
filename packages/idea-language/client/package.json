@@ -3,7 +3,7 @@
 	"description": "Implementation of idea language server in node.",
 	"author": "Chris <chris@incept.asia>",
 	"license": "MIT",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"publisher": "ossph",
 	"repository": {
 		"type": "git",
