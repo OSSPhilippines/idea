@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import Exception from './Exception';
+import { Exception } from '@ossph/idea-parser';
 
 /**
  * Loader

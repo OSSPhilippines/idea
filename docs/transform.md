@@ -250,13 +250,13 @@ The above example in TypeScript would look like the following.
 
 ```js
 // make-enums.ts
-import type { PluginProps, EnumConfig } from '@ossph/idea';
+import type { PluginWithCLIProps, EnumConfig } from '@ossph/idea';
 
 import path from 'path';
 import { Project, IndentationText } from 'ts-morph';
 import { Loader } from '@ossph/idea';
 
-export default function generate({ config, schema, cli }: PluginProps) {
+export default function generate({ config, schema, cli }: PluginWithCLIProps) {
   // 1. Config
   //we need to know where to put this code...
   if (!config.output) {

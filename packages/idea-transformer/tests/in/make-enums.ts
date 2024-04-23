@@ -1,27 +1,34 @@
-import type { PluginWithCLIProps, EnumConfig } from '@ossph/idea';
-
+//types
+import type { EnumConfig } from '@ossph/idea';
+import type { PluginProps } from '../../src';
+//others
 import path from 'path';
 import { Project, IndentationText } from 'ts-morph';
-import { Loader } from '@ossph/idea';
+import { Loader, Exception } from '../../src';
 
-export default function generate({ config, schema, cli }: PluginWithCLIProps) {
+// plugin "./make-enums" {
+//   ts true
+//   output "./out/enums.ts"
+// }
+
+export default function generate({ config, schema, cwd }: PluginProps<{}>) {
   // 1. Config
   //we need to know where to put this code...
   if (!config.output) {
-    return cli.terminal.error('No output directory specified');
+    throw Exception.for('No output directory specified');
   }
   //code in typescript or javascript?
   const lang = config.lang || 'ts';
   // 2. Project
   //find the absolute path from the output config
-  const destination = Loader.absolute(config.output as string);
+  const destination = Loader.absolute(config.output as string, cwd);
   //output directory from the destination
   const dirname = path.dirname(destination);
   //file name from the destination
   const filename = path.basename(destination);
   //start a ts-morph project
   const project = new Project({
-    tsConfigFilePath: path.resolve(__dirname, '../tsconfig.json'),
+    tsConfigFilePath: path.resolve(__dirname, 'tsconfig.json'),
     skipAddingFilesFromTsConfig: true,
     compilerOptions: {
       outDir: dirname,

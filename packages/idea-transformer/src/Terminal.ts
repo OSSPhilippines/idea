@@ -1,9 +1,12 @@
-import fs from 'fs';
-
-import { final } from '@ossph/idea-parser';
-
+//types
+import { PluginProps } from './Transformer';
+//others
+import Transformer from './Transformer';
 import Loader from './Loader';
-import Exception from './Exception';
+
+export type CLIProps = { cli: Terminal };
+export type TerminalTransformer = Transformer<CLIProps>
+export type PluginWithCLIProps = PluginProps<CLIProps>;
 
 export default class Terminal {
   // brand to prefix in all logs
@@ -53,7 +56,6 @@ export default class Terminal {
    * and sets the value to that name space
    */
   public static params(...args: string[]) {
-
     const params: Record<string, any> = {};
 
     const format = (
@@ -197,12 +199,10 @@ export default class Terminal {
   protected _terminal: typeof Terminal;
   //cached cli args
   protected _args: string[];
-  //cached input file
-  protected _input = '';
   //cached terminal params (parsed argv)
   protected _params: Record<string, any>|null = null;
-  //cached schema
-  protected _schema: Record<string, any>|null = null;
+  //transformer
+  protected _transformer: TerminalTransformer;
 
   /**
    * Creates the loader instance
@@ -215,21 +215,6 @@ export default class Terminal {
   }
 
   /**
-   * Tries to load the schema file
-   */
-  get schema() {
-    if (!this._schema) {
-      //check if input file exists
-      if (!fs.existsSync(this._input)) {
-        throw Exception.for('Input file %s does not exist', this._input);
-      }
-      this._schema = final(fs.readFileSync(this._input, 'utf8'));
-    }
-
-    return this._schema as Record<string, any>;
-  }
-
-  /**
    * Returns the static terminal interface
    */
   get terminal() {
@@ -237,28 +222,22 @@ export default class Terminal {
   }
 
   /**
-   * Sets the input file
-   */
-  set input(input: string) {
-    //check input file for relative pathing, then make it absolute
-    this._input = Loader.absolute(input);
-    this._schema = null;
-  }
-
-  /**
    * Preloads the input and output settings
    */
-  constructor() {
-    //find cwd
-    const cwd = Loader.cwd();
+  constructor(args: string[], cwd = Loader.cwd()) {
     //get params
-    this._args = process.argv.slice(2);
+    this._args = args;
     this._terminal = this.constructor as typeof Terminal;
     //get io from commandline
-    this.input = this.expect(
-      [ 'input', 'i' ], 
-      `${cwd}/schema.${this._terminal.extension}`
+    const input = Loader.absolute(
+      //get the idea location from the cli
+      this.expect(
+        [ 'input', 'i' ], 
+        `${cwd}/schema.${this._terminal.extension}`
+      ), 
+      cwd
     );
+    this._transformer = new Transformer<CLIProps>(input, cwd);
   }
 
   /**
@@ -274,46 +253,9 @@ export default class Terminal {
   }
 
   /**
-   * Calls the generator plugin
-   */
-  public generate(callback: Function, config: Record<string, any> = {}) {
-    //if no plugins defined throw error
-    if (!this.schema.plugin) {
-      throw Exception.for('No plugins defined in schema file');
-    }
-    const { plugin, prop, ...schema } = this.schema;
-    //call the callback
-    callback({ config, schema, cli: this });
-  }
-
-  /**
    * Runs the cli
    */
   public run() {
-    //if no plugins defined throw error
-    if (!this.schema.plugin) {
-      throw Exception.for('No plugins defined in schema file');
-    }
-    //extract plugins from the schema
-    const { plugin: plugins, ...schema } = this.schema;
-    //loop through plugins
-    for (const plugin in plugins) {
-      //determine the module path
-      const module = Loader.absolute(plugin, Loader.cwd());
-      //get the plugin config
-      const config = this.schema.plugin[plugin] as Record<string, any>;
-      //load the callback
-      let callback = Loader.require(module);
-      //check for default
-      if (callback.default) {
-        callback = callback.default;
-      }
-      //check if it's a function
-      if (typeof callback === 'function') {
-        //call the callback
-        callback({ config, schema, cli: this });
-      }
-      //dont do anything else if it's not a function
-    }
+    this._transformer.transform({ cli: this });
   }
 }

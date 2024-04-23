@@ -12,7 +12,9 @@
     "build:idea": "yarn --cwd packages/idea build",
     "build:example": "yarn --cwd example build",
     "transform": "yarn --cwd example transform -i ./my.idea",
-    "test": "yarn --cwd packages/idea-parser test"
+    "test": "yarn test:parser && yarn test:transformer",
+    "test:parser": "yarn --cwd packages/idea-parser test",
+    "test:transformer": "yarn --cwd packages/idea-transformer test"
   },
   "devDependencies": {
     "concurrently": "7.6.0"
