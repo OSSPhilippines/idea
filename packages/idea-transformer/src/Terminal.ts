@@ -197,6 +197,8 @@ export default class Terminal {
 
   //access to static methods from the instance
   protected _terminal: typeof Terminal;
+  //current working directory
+  protected _cwd: string;
   //cached cli args
   protected _args: string[];
   //cached terminal params (parsed argv)
@@ -205,9 +207,16 @@ export default class Terminal {
   protected _transformer: TerminalTransformer;
 
   /**
+   * Returns current working directory
+   */
+  public get cwd() {
+    return this._cwd;
+  }
+
+  /**
    * Creates the loader instance
    */
-  get params() {
+  public get params() {
     if (!this._params) {
       this._params = this.terminal.params(...this._args);
     }
@@ -217,7 +226,7 @@ export default class Terminal {
   /**
    * Returns the static terminal interface
    */
-  get terminal() {
+  public get terminal() {
     return this._terminal;
   }
 
@@ -225,7 +234,9 @@ export default class Terminal {
    * Preloads the input and output settings
    */
   constructor(args: string[], cwd = Loader.cwd()) {
-    //get params
+    //set current working directory
+    this._cwd = cwd;
+    //set cli args
     this._args = args;
     this._terminal = this.constructor as typeof Terminal;
     //get io from commandline
