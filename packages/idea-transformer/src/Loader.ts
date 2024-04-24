@@ -46,6 +46,27 @@ export default class Loader {
   }
 
   /**
+   * Returns the relative path from the source file to the required file
+   * Note: This works better if using absolute paths from Loader.aboslute()
+   */
+  static relative(source: string, require: string, withExtname = false) {
+    //if dont include extname
+    if (!withExtname) {
+      //check for extname
+      const extname = path.extname(require);
+      //if there is an extname
+      if (extname.length) {
+        //remove the extname
+        require = require.substring(0, require.length - extname.length);
+      }
+    }
+    //get the relative path
+    const relative = path.relative(path.dirname(source), require);
+    //if the relative path is not relative, make it relative
+    return relative.startsWith('.') ? relative: `./${relative}`;
+  }
+
+  /**
    * require() should be monitored separately from the code
    */
   static require(file: string) {
