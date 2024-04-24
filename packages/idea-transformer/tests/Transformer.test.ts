@@ -28,20 +28,6 @@ describe('Transformer Tests', () => {
 
   it('Should make enums', () => {
     const transformer = new Transformer<{}>(idea, cwd);
-    transformer.run(makeEnums, {
-      output: './out/enums.ts',
-      lang: 'ts'
-    });
-    const out = path.join(cwd, 'out/enums.ts');
-    const exists = fs.existsSync(out);
-    expect(exists).to.be.true;
-    if (exists) {
-      fs.unlinkSync(out);
-    }
-  }).timeout(20000);
-
-  it('Should make enums', () => {
-    const transformer = new Transformer<{}>(idea, cwd);
     transformer.transform();
     const out = path.join(cwd, 'out/enums.ts');
     const exists = fs.existsSync(out);

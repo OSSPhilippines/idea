@@ -20,6 +20,20 @@ export default class Transformer<T extends {}> {
   protected _schema: SchemaConfig|null = null;
 
   /**
+   * Returns the current working directory
+   */
+  get cwd() {
+    return this._cwd;
+  }
+
+  /**
+   * Returns the input
+   */
+  get input() {
+    return this._input;
+  }
+
+  /**
    * Tries to load the schema file
    */
   get schema() {
@@ -40,26 +54,6 @@ export default class Transformer<T extends {}> {
   constructor(input: string, cwd = Loader.cwd()) {
     this._input = input;
     this._cwd = cwd;
-  }
-
-  /**
-   * Runs a transformer plugin
-   */
-  public run(
-    callback: Function, 
-    config: Record<string, any> = {}, 
-    extras?: T
-  ) {
-    //remove the plugin and prop from the parsed schema
-    const { plugin, prop, ...schema } = this.schema;
-    const props = { 
-      ...extras, 
-      config, 
-      schema, 
-      cwd: this._cwd 
-    } as PluginProps<T>;
-    //call the callback
-    callback(props);
   }
 
   /**
@@ -85,7 +79,12 @@ export default class Transformer<T extends {}> {
       //check if it's a function
       if (typeof callback === 'function') {
         //call the callback
-        this.run(callback, config, extras);
+        callback({ 
+          ...extras, 
+          config, 
+          schema: this.schema, 
+          cwd: this._cwd 
+        });
       }
       //dont do anything else if it's not a function
     }
