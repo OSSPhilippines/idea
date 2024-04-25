@@ -94,7 +94,7 @@ export interface Parser {
   expect<T = Token>(keys: string | string[]): T;
   get(key: string): Definition|undefined;
   load(code: string, index: number): this;
-  match(code: string, start: number, keys?: string[]): Token[];
+  match(code: string, start: number, keys?: string[]): Token|null;
   next(keys: string | string[]): boolean;
   optional<T = Token>(keys: string | string[]): T | undefined;
   read(): Token | undefined

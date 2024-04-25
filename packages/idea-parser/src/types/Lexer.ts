@@ -67,7 +67,7 @@ export default class Lexer implements Parser {
       );
     }
     //get match (sorted by names defined above)
-    const match = this.match(this._code, this._index, keys)[0];
+    const match = this.match(this._code, this._index, keys);
     //if no match
     if (!match) {
       //throw exception
@@ -110,35 +110,26 @@ export default class Lexer implements Parser {
   }
 
   /**
-   * Returns all the matching definitions for a given value
+   * Returns the first match from a list of definitions
    */
   public match(code: string, start: number, keys?: string[]) {
     //if no names, get all names
     keys = keys || Object.keys(this._dictionary);
-    //make the dictionary based on the order of names
-    const dictionary = keys
-      //add the definitions to dictionary
-      .map(key => {
-        const reader = this.get(key);
-        if (!reader) {
-          throw Exception.for('Unknown definition %s', key);
-        }
-        return reader;
-      })
-      //filter out undefined definitions
-      .filter(Boolean);
-    //storage for matches
-    const matches: Token[] = [];
-    //loop through dictionary
-    for (const { reader } of dictionary) {
-      const results = reader(code, start, this);
+    //loop through all the keys
+    for (let i = 0; i < keys.length; i++) {
+      if (!this._dictionary[keys[i]]) {
+        throw Exception.for('Unknown definition %s', keys[i]);
+      }
+      const results = this._dictionary[keys[i]].reader(code, start, this);
       //end is greater than start
       if (results && results.end > start) {
-        //add to matches
-        matches.push(results);
+        //yield results
+        return results;
       }
+      //if no results, try the next definition...
     }
-    return matches;
+    //no definitions matched
+    return null;
   }
 
   /**

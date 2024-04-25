@@ -57,9 +57,7 @@ export default class SchemaTree {
    * Consumes non code
    */
   noncode() {
-    while(this._lexer.next(['whitespace', 'comment', 'note'])) {
-      this._lexer.expect(['whitespace', 'comment', 'note']);
-    }
+    while(this._lexer.optional(['whitespace', 'comment', 'note']));
   }
 
   /**
@@ -67,33 +65,16 @@ export default class SchemaTree {
    */
   parse(code: string, start = 0): SchemaToken {
     this._lexer.load(code, start);
-    const entries = [ 
-      'EnumWord', 
-      'PropWord', 
-      'TypeWord', 
-      'ModelWord', 
-      'PluginWord' 
-    ];
-    this._lexer.optional('whitespace');
+    this.noncode();
     const body: DeclarationToken[] = [];
-    while (this._lexer.next(entries)) {
-      switch(true) {
-        case this._lexer.next('EnumWord'):
-          body.push(this._enumTree.enum());
-          break;
-        case this._lexer.next('PropWord'):
-          body.push(this._propTree.prop());
-          break;
-        case this._lexer.next('TypeWord'):
-          body.push(this._typeTree.type());
-          break;
-        case this._lexer.next('ModelWord'):
-          body.push(this._modelTree.model());
-          break;
-        case this._lexer.next('PluginWord'):
-          body.push(this._pluginTree.plugin());
-          break;
-      }
+    for (const token of this.dotryall(
+      () => this._enumTree.enum(),
+      () => this._propTree.prop(),
+      () => this._typeTree.type(),
+      () => this._modelTree.model(),
+      () => this._pluginTree.plugin()
+    )) {
+      body.push(token);
       this.noncode();
     }
 
@@ -116,5 +97,24 @@ export default class SchemaTree {
       end: this._lexer.index,
       body
     };
+  }
+
+  /**
+   * Wrapper for do-try-catch-while
+   */
+  protected *dotryall(...all: (() => DeclarationToken|undefined)[]) {
+    let token: DeclarationToken|undefined;
+    do {
+      token = undefined;
+      for (const callback of all) {
+        try {
+          token = callback();
+          if (token) {
+            yield token;
+            break;
+          }
+        } catch(error) {}
+      }
+    } while(token);
   }
 };

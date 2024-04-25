@@ -38,10 +38,10 @@ export default class ModelTree extends TypeTree {
     this._lexer.expect('whitespace');
     const properties: PropertyToken[] = [];
     //model Foobar @id("foo" "bar")
-    while(this._lexer.next('AttributeIdentifier')) {
+    this.dotry(() => {
       properties.push(this.parameter());
       this.noncode();
-    }
+    });
     this.noncode();
     //model Foobar @id("foo" "bar") {
     this._lexer.expect('{');
@@ -50,9 +50,9 @@ export default class ModelTree extends TypeTree {
     //model Foobar @id("foo" "bar") {
     //  foo String @id("foo" "bar")
     //  ...
-    while(this._lexer.next('CamelIdentifier')) {
+    this.dotry(() => {
       columns.push(this.property());
-    }
+    });
     //model Foobar @id("foo" "bar") {
     //  foo String @id("foo" "bar")
     //  ...

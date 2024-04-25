@@ -56,9 +56,9 @@ export default class TypeTree extends AbstractTree {
     //enum Foobar {
     //  FOO "bar"
     //  ...
-    while(this._lexer.next('UpperIdentifier')) {
+    this.dotry(() => {
       props.push(this.property());
-    }
+    });
     //enum Foobar {
     //  FOO "bar"
     //  ...

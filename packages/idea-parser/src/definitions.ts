@@ -11,15 +11,15 @@ const definitions: Record<string, Reader> = {
     code, 
     index
   ),
-  'space': (code, index) => reader(
+  'space': (code, index) => scan(
     '_Space', 
-    /^[ ]+$/, 
+    /^[ ]+/, 
     code, 
     index
   ),
-  'whitespace': (code, index) => reader(
+  'whitespace': (code, index) => scan(
     '_Whitespace', 
-    /^\s+$/, 
+    /^\s+/, 
     code, 
     index
   ),
@@ -29,45 +29,45 @@ const definitions: Record<string, Reader> = {
     code, 
     index
   ),
-  'comment': (code, index) => reader(
+  'comment': (code, index) => scan(
     '_Comment', 
-    /^\/\/[^\n\r]*$/, 
+    /^\/\/[^\n\r]*/, 
     code, 
     index
   ),
-  ')': (code, index) => reader(
+  ')': (code, index) => scan(
     '_ParenClose', 
-    /^\)$/, 
+    /^\)/, 
     code, 
     index
   ),
-  '(': (code, index) => reader(
+  '(': (code, index) => scan(
     '_ParenOpen', 
-    /^\($/, 
+    /^\(/, 
     code, 
     index
   ),
-  '}': (code, index) => reader(
+  '}': (code, index) => scan(
     '_BraceClose', 
-    /^\}$/, 
+    /^\}/, 
     code, 
     index
   ),
-  '{': (code, index) => reader(
+  '{': (code, index) => scan(
     '_BraceOpen', 
-    /^\{$/, 
+    /^\{/, 
     code, 
     index
   ),
-  ']': (code, index) => reader(
+  ']': (code, index) => scan(
     '_SquareClose', 
-    /^\]$/, 
+    /^\]/, 
     code, 
     index
   ),
-  '[': (code, index) => reader(
+  '[': (code, index) => scan(
     '_SquareOpen', 
-    /^\[$/, 
+    /^\[/, 
     code, 
     index
   ),
@@ -122,77 +122,33 @@ const definitions: Record<string, Reader> = {
       raw: `'${value}'`
     };
   },
-  'Float': (code, index) => {
-    let value = '';
-    let matched = false;
-    const start = index;
-    while (index < code.length) {
-      //get the character (and increment index afterwards)
-      const char = code.charAt(index++);
-      if (!/^\d+\.\d+$/.test(value + char)) {
-        //if number then dot (optional)
-        if (/^\d+\.{0,1}$/.test(value + char)) {
-          //add character to value anyways
-          value += char;
-          //let it keep parsing
-          continue;
-        }
-        //if we do not have a value
-        if (value.length === 0) {
-          return undefined;
-        }
-        //return where we ended
-        return { 
-          type: 'Literal',
-          start,
-          end: index - 1,
-          value: parseFloat(value),
-          raw: `${value}`
-        };
-      }
-      //add character to value
-      value += char;
-      //remember last match
-      matched = true;
-    }
-    //no more code...
-    //did it end with a match?
-    return matched && value.length
-      ? { 
-        type: 'Literal',
-        start,
-        end: index,
-        value: parseFloat(value),
-        raw: `${value}`
-      } : undefined;
-  },
-  'Integer': (code, index) => {
-    if (!/^[0-9]$/.test(code.charAt(index))) {
-      return undefined;
-    }
-    const start = index;
-    let value = code.charAt(index);
-    while (index < code.length) {
-      const char = code.charAt(++index);
-      if (!/^[0-9]+$/.test(value + char)) {
-        return { 
-          type: 'Literal',
-          start,
-          end: index - 1,
-          value: parseInt(value),
-          raw: `${value}`
-        };
-      }
-      value += char;
-    }
-    
-    if (/^[0-9]+$/.test(value)) {
+  'Float': (code, start) => {
+    const match = code.slice(start).match(/^\d+\.\d+/);
+    if (match !== null && match.index === 0) {
+      const end = start + match[0].length;
+      const value = code.substring(start, end);
       return { 
-        type: 'Literal',
-        start,
-        end: index,
-        value: parseInt(value),
-        raw: `${value}`
+        type: 'Literal', 
+        start, 
+        end, 
+        value: parseFloat(value), 
+        raw: `${value}` 
+      };
+    }
+
+    return undefined;
+  },
+  'Integer': (code, start) => {
+    const match = code.slice(start).match(/^[0-9]+/);
+    if (match !== null && match.index === 0) {
+      const end = start + match[0].length;
+      const value = code.substring(start, end);
+      return { 
+        type: 'Literal', 
+        start, 
+        end, 
+        value: parseInt(value), 
+        raw: `${value}` 
       };
     }
     return undefined;
@@ -276,77 +232,38 @@ const definitions: Record<string, Reader> = {
     };
   },
   'AnyIdentifier': (code, index) => identifier(
-    /^[a-z_][a-z0-9_]*$/i, 
+    /^[a-z_][a-z0-9_]*/i, 
     code, 
     index
   ),
   'UpperIdentifier': (code, index) => identifier(
-    /^[A-Z_][A-Z0-9_]*$/i, 
+    /^[A-Z_][A-Z0-9_]*/i, 
     code, 
     index
   ),
   'CapitalIdentifier': (code, index) => identifier(
-    /^[A-Z_][a-zA-Z0-9_]*$/i, 
+    /^[A-Z_][a-zA-Z0-9_]*/i, 
     code, 
     index
   ),
   'CamelIdentifier': (code, index) => identifier(
-    /^[a-z_][a-zA-Z0-9_]*$/, 
+    /^[a-z_][a-zA-Z0-9_]*/, 
     code, 
     index
   ),
   'LowerIdentifier': (code, index) => identifier(
-    /^[a-z_][a-z0-9_]*$/i, 
+    /^[a-z_][a-z0-9_]*/i, 
     code, 
     index
   ),
-  'AttributeIdentifier': (code, index) => {
-    let name = '';
-    let matched = false;
-    const start = index;
-    const regexp = /^@[a-z](\.?[a-z0-9_]+)*$/;
-    while (index < code.length) {
-      //get the character (and increment index afterwards)
-      const char = code.charAt(index++);
-      if (!regexp.test(name + char)) {
-        //if attr then dot (optional)
-        if (/^@$/.test(name + char) 
-          || /^@[a-z][a-z0-9_\.]*\.$/.test(name + char)
-        ) {
-          //add character to value anyways
-          name += char;
-          //let it keep parsing
-          continue;
-        }
-        //if we do not have a value
-        if (name.length === 0 || !regexp.test(name)) {
-          return undefined;
-        }
-        //return where we ended
-        return { 
-          type: 'Identifier',
-          start,
-          end: index - 1,
-          name
-        };
-      }
-      //add character to value
-      name += char;
-      //remember last match
-      matched = true;
+  'AttributeIdentifier': (code, start) => {
+    const match = code.slice(start).match(/^@[a-z](\.?[a-z0-9_]+)*/);
+    if (match !== null && match.index === 0) {
+      const end = start + match[0].length;
+      const name = code.substring(start, end);
+      return { type: 'Identifier', start, end, name };
     }
-
-    if (!matched) {
-      return undefined;
-    }
-    //no more code...
-    //did it end with a match?
-    return regexp.test(name) ? { 
-      type: 'Identifier',
-      start,
-      end: index,
-      name
-    } : undefined;
+    return undefined;
   }
 };
 
@@ -356,6 +273,22 @@ export const scalar = [
 ];
 
 export const data = [ ...scalar, 'Object', 'Array' ];
+
+export function scan(
+  type: string, 
+  regexp: RegExp, 
+  code: string, 
+  start: number
+): UnknownToken | undefined {
+  const match = code.slice(start).match(regexp);
+  if (match !== null && match.index === 0) {
+    const end = start + match[0].length;
+    const value = code.substring(start, end);
+    return { type, start, end, value, raw: value };
+  }
+
+  return undefined;
+}
 
 export function reader(
   type: string, 
@@ -401,7 +334,7 @@ export function identifier(
   code: string, 
   index: number
 ): IdentifierToken | undefined {
-  const results = reader('Identifier', regexp, code, index);
+  const results = scan('Identifier', regexp, code, index);
   if (results) {
     return {
       type: 'Identifier',
