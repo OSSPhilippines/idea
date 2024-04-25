@@ -1,4 +1,4 @@
-# Idea Transform
+# Idea Transformer
 
 A programmatical command line interface used by projects and that calls 
 on external transformers to make relevant code.
@@ -6,21 +6,21 @@ on external transformers to make relevant code.
 ## Install
 
 ```bash
-$ npm install @ossph/idea-transform
+$ npm install @ossph/idea-transformer
 
 ... or ...
 
-$ yarn add @ossph/idea-transform
+$ yarn add @ossph/idea-transformer
 ```
 
-## Usage
+## Custom Terminal
 
 Create a bin file and paste this basic example.
 
 ```js
 #!/usr/bin/env node
 
-const { Terminal } = require('@ossph/idea-transform');
+const { Terminal } = require('@ossph/idea-transformer');
 new Terminal().run();
 ```
 
@@ -31,23 +31,27 @@ extension `.mylib`.
 ```js
 #!/usr/bin/env node
 
-const { Terminal } = require('@ossph/idea-transform');
+const { Terminal } = require('@ossph/idea-transformer');
 Terminal.brand = '[MY LIB]';
 Terminal.extension = 'mylib';
 new Terminal().run();
 ```
 
-You can also manually trigger generators that were not included in the 
-schema file like the following.
+## Programmatically Transform
+
+You can also call the transformer manually like the following example.
 
 ```js
-#!/usr/bin/env node
+const { Loader, Transformer } = require('@ossph/idea-transformer');
 
-const { Terminal } = require('@ossph/idea-transform');
-const terminal = new Terminal();
-terminal.generate('/location/to/generator.js', { custom: 'config' });
+const cwd = __dirname;
+const idea = Loader.absolute('./my.idea', cwd);
+
+const transformer = new Transformer(idea, cwd);
+//read raw schema data
+const schema = transformer.schema;
+//transform schema
+transformer.transform();
 ```
-
-> Not calling `run()` wont trigger any of the generators in the schema file.
 
 See [https://github.com/OSSPhilippines/idea] for more info.

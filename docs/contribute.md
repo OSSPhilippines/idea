@@ -17,7 +17,7 @@ The projects in this monorepo are the following.
 2. `@ossph/idea-language` - A language server used by vscode/vim to read 
    from `.idea` files and check for syntax errors and to enable 
    intellisense for the file type.
-3. `@ossph/idea-generator` - A programmatical command line interface used 
+3. `@ossph/idea-transformer` - A programmatical command line interface used 
    by projects and that calls on external plugins to make relevant 
    code (like SQL schema, GraphQL, react components, etc.)
 4. `ossph/idea` - A stand alone command line tool used that calls on 
