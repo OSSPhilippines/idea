@@ -3,6 +3,7 @@
   <a href="https://www.npmjs.com/package/@ossph/idea"><img src="https://img.shields.io/npm/v/@ossph/idea.svg?style=flat" /></a>
   <a href="https://github.com/OSSPhilippines/idea/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" /></a>
   <a href="https://github.com/OSSPhilippines/idea/commits/main/"><img src="https://img.shields.io/github/last-commit/OSSPhilippines/idea" /></a>
+  <a href="https://github.com/OSSPhilippines/idea/actions"><img src="https://img.shields.io/github/actions/workflow/status/OSSPhilippines/idea/test.yml" /></a>
   <a href="https://github.com/OSSPhilippines/idea/blob/main/docs/contribute.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" /></a>
   <br />
   <br />
