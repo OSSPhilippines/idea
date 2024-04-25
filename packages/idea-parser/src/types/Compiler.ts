@@ -64,10 +64,11 @@ export default class Compiler {
 
   /**
    * Converts a schema tree into a final json version
-   * (Removes prop references)
+   * (Removes prop and use references)
    */
   static final(token: SchemaToken) {
     const schema = this.schema(token, true);
+    delete schema.use;
     delete schema.prop;
     return schema as FinalSchemaConfig;
   }

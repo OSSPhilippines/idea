@@ -132,9 +132,9 @@ export type FinalSchemaConfig = {
   type?: Record<string, TypeConfig>,
   model?: Record<string, ModelConfig>,
   plugin?: Record<string, PluginConfig>
-  use?: string[]
 };
 
 export type SchemaConfig = FinalSchemaConfig & {
-  prop?: Record<string, PropConfig>
+  prop?: Record<string, PropConfig>,
+  use?: string[]
 };

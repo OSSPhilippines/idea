@@ -1,7 +1,4 @@
 {
-  "use": [
-    "./another.idea"
-  ],
   "plugin": {
     "./custom-plugin": {
       "provider": "custom-client-js",

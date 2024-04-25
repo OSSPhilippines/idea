@@ -13,7 +13,7 @@ const idea = Loader.absolute('./schema.idea', cwd);
 
 describe('Transformer Tests', () => {
   it('Should get processed schema', () => {
-    const transformer = new Transformer(idea);
+    const transformer = new Transformer(idea, cwd);
     const actual = transformer.schema;
     const output = actual.plugin?.['./in/make-enums'].output;
     expect(output).to.equal('./out/enums.ts');
