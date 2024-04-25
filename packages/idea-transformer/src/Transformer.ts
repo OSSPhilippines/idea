@@ -2,7 +2,8 @@
 import type { PluginConfig, SchemaConfig } from '@ossph/idea-parser';
 //others
 import fs from 'fs';
-import { final, Exception } from '@ossph/idea-parser';
+import path from 'path';
+import { parse, Exception } from '@ossph/idea-parser';
 import Loader from './Loader';
 
 export type PluginProps<T extends {}> = T & {
@@ -20,6 +21,20 @@ export default class Transformer<T extends {}> {
   protected _schema: SchemaConfig|null = null;
 
   /**
+   * Returns the current working directory
+   */
+  get cwd() {
+    return this._cwd;
+  }
+
+  /**
+   * Returns the input
+   */
+  get input() {
+    return this._input;
+  }
+
+  /**
    * Tries to load the schema file
    */
   get schema() {
@@ -28,7 +43,33 @@ export default class Transformer<T extends {}> {
       if (!fs.existsSync(this._input)) {
         throw Exception.for('Input file %s does not exist', this._input);
       }
-      this._schema = final(fs.readFileSync(this._input, 'utf8'));
+      //parse schema
+      const schema = parse(fs.readFileSync(this._input, 'utf8'));
+      //look for use
+      if (Array.isArray(schema.use)) {
+        schema.use.forEach((file: string) => {
+          const absolute = Loader.absolute(file, this._cwd);
+          const dirname = path.dirname(absolute);
+          const transformer = new Transformer(absolute, dirname);
+          const parent = transformer.schema;
+          //soft merge the object values of enum, 
+          //type, model from parent to schema
+          if (parent.enum) {
+            schema.enum = { ...parent.enum, ...schema.enum };
+          }
+          if (parent.type) {
+            schema.type = { ...parent.type, ...schema.type };
+          }
+          if (parent.model) {
+            schema.model = { ...parent.model, ...schema.model };
+          }
+        });
+      }
+      //finalize schema
+      delete schema.use;
+      delete schema.prop;
+      //set schema
+      this._schema = schema;
     }
 
     return this._schema;
@@ -40,26 +81,6 @@ export default class Transformer<T extends {}> {
   constructor(input: string, cwd = Loader.cwd()) {
     this._input = input;
     this._cwd = cwd;
-  }
-
-  /**
-   * Runs a transformer plugin
-   */
-  public run(
-    callback: Function, 
-    config: Record<string, any> = {}, 
-    extras?: T
-  ) {
-    //remove the plugin and prop from the parsed schema
-    const { plugin, prop, ...schema } = this.schema;
-    const props = { 
-      ...extras, 
-      config, 
-      schema, 
-      cwd: this._cwd 
-    } as PluginProps<T>;
-    //call the callback
-    callback(props);
   }
 
   /**
@@ -85,7 +106,12 @@ export default class Transformer<T extends {}> {
       //check if it's a function
       if (typeof callback === 'function') {
         //call the callback
-        this.run(callback, config, extras);
+        callback({ 
+          ...extras, 
+          config, 
+          schema: this.schema, 
+          cwd: this._cwd 
+        });
       }
       //dont do anything else if it's not a function
     }

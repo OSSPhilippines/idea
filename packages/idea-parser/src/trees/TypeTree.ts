@@ -7,19 +7,19 @@ import type {
 } from '../types';
 
 import Lexer from '../types/Lexer';
-import { data, reader } from '../definitions';
+import { data, scan } from '../definitions';
 
 import AbstractTree from './AbstractTree';
 
-export default class TypeTree extends AbstractTree {
+export default class TypeTree extends AbstractTree<DeclarationToken> {
   static data = [ ...data, 'CapitalIdentifier' ];
 
   //the language used
   static definitions(lexer: Lexer) {
     super.definitions(lexer);
     lexer.define('Type', (code, index) => {
-      const regexp = /^[A-Z][a-zA-Z0-9_]*((\[\])|\?)?$/;
-      const results = reader('Literal', regexp, code, index);
+      const regexp = /^[A-Z][a-zA-Z0-9_]*((\[\])|\?)?/;
+      const results = scan('Literal', regexp, code, index);
       if (results) {
         const square = code.substring(
           results.end, 
@@ -33,9 +33,9 @@ export default class TypeTree extends AbstractTree {
       }
       return results;
     }); 
-    lexer.define('TypeWord', (code, index) => reader(
+    lexer.define('TypeWord', (code, index) => scan(
       '_TypeWord', 
-      /^type$/, 
+      /^type/, 
       code, 
       index
     ));
@@ -65,16 +65,21 @@ export default class TypeTree extends AbstractTree {
     const key = this._lexer.expect<IdentifierToken>('AttributeIdentifier');
     key.name = key.name.slice(1);
     const elements: DataToken[] = [];
-    if (this._lexer.next('(')) {
-      // @id(
-      this._lexer.expect('(');
+    // @id(
+    if (this._lexer.optional('(')) {
       this.noncode();
       // @id("foo" "bar"
       const data = (this.constructor as typeof TypeTree).data;
-      while(this._lexer.next(data)) {
-        elements.push(this._lexer.expect<DataToken>(data));
-        this.noncode();
-      }
+      //keep parsing data until we reach the end
+      let results: DataToken|undefined;
+      do {
+        results = this._lexer.optional<DataToken>(data);
+        if (results) {
+          elements.push(results);
+          this.noncode();
+          continue;
+        }
+      } while(results);
       // @id("foo" "bar")
       this._lexer.expect(')');
     }
@@ -115,10 +120,10 @@ export default class TypeTree extends AbstractTree {
     this._lexer.expect('whitespace');
     const properties: PropertyToken[] = [];
     //foo String @id("foo" "bar") ...
-    while(this._lexer.next('AttributeIdentifier')) {
+    this.dotry(() => {
       properties.push(this.parameter());
       this.noncode();
-    }
+    });
     return {
       type: 'Property',
       kind: 'init',
@@ -187,10 +192,10 @@ export default class TypeTree extends AbstractTree {
     this._lexer.expect('whitespace');
     const properties: PropertyToken[] = [];
     //type Foobar @id("foo" "bar")
-    while(this._lexer.next('AttributeIdentifier')) {
+    this.dotry(() => {
       properties.push(this.parameter());
       this.noncode();
-    }
+    });
     this.noncode();
     //type Foobar @id("foo" "bar") {
     this._lexer.expect('{');
@@ -199,9 +204,9 @@ export default class TypeTree extends AbstractTree {
     //type Foobar @id("foo" "bar") {
     //  foo String @id("foo" "bar")
     //  ...
-    while(this._lexer.next('CamelIdentifier')) {
+    this.dotry(() => {
       columns.push(this.property());
-    }
+    });
     //type Foobar @id("foo" "bar") {
     //  foo String @id("foo" "bar")
     //  ...

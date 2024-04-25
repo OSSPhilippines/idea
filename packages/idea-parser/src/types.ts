@@ -14,12 +14,20 @@ export type UnknownToken = {
   raw: string;
 };
 
+export type ImportToken = {
+  type: 'ImportDeclaration';
+  start: number;
+  end: number;
+  specifiers: [],
+  source: LiteralToken
+}
+
 export type SchemaToken = {
   type: 'Program';
   kind: 'schema';
   start: number;
   end: number;
-  body: DeclarationToken[];
+  body: (DeclarationToken|ImportToken)[];
 };
 
 export type DeclarationToken = {
@@ -94,7 +102,7 @@ export interface Parser {
   expect<T = Token>(keys: string | string[]): T;
   get(key: string): Definition|undefined;
   load(code: string, index: number): this;
-  match(code: string, start: number, keys?: string[]): Token[];
+  match(code: string, start: number, keys?: string[]): Token|null;
   next(keys: string | string[]): boolean;
   optional<T = Token>(keys: string | string[]): T | undefined;
   read(): Token | undefined
@@ -127,5 +135,6 @@ export type FinalSchemaConfig = {
 };
 
 export type SchemaConfig = FinalSchemaConfig & {
-  prop?: Record<string, PropConfig>
+  prop?: Record<string, PropConfig>,
+  use?: string[]
 };

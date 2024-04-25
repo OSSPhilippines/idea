@@ -1,6 +1,6 @@
 {
   "name": "@ossph/idea-parser",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "license": "MIT",
   "description": "Parses ideas to AST and readable JSON.",
   "author": "Chris <chris@incept.asia>",
@@ -13,7 +13,7 @@
     "build": "npm run build:tsc && npm run build:files",
     "build:tsc": "tsc",
     "build:files": "cp ./README.md ./dist/ && cp ./package.json ./dist/ && cp ./LICENSE ./dist/",
-    "test": "cross-env DATABASE_URL=test ts-mocha tests/*.test.ts"
+    "test": "nyc cross-env DATABASE_URL=test ts-mocha tests/*.test.ts"
   },
   "devDependencies": {
     "@types/chai": "4.3.5",
@@ -25,6 +25,7 @@
     "cross-env": "7.0.3",
     "deep-equal-in-any-order": "",
     "mocha": "10.2.0",
+    "nyc": "15.1.0",
     "ts-mocha": "10.0.0",
     "ts-morph": "22.0.0",
     "ts-node": "10.9.2",

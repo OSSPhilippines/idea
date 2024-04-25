@@ -7,6 +7,9 @@
 		{
       "include": "#block_plugin"
     },
+    {
+      "include": "#block_use"
+    },
 		{
       "include": "#block_enum"
     },
@@ -242,6 +245,19 @@
 		"block_plugin": {
       "name": "source.idea.embedded.source",
 			"begin": "^\\s*(plugin)\\s+(\"[^\"]*\")",
+			"beginCaptures": {
+        "1": {
+          "name": "storage.type.plugin.idea"
+        },
+        "2": {
+          "name": "string.quoted.double.name.plugin.idea"
+        }
+      },
+			"end": "\\s+"
+    },
+		"block_use": {
+      "name": "source.idea.embedded.source",
+			"begin": "^\\s*(use)\\s+(\"[^\"]*\")",
 			"beginCaptures": {
         "1": {
           "name": "storage.type.plugin.idea"

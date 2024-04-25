@@ -4,6 +4,8 @@ plugin "./custom-plugin" {
   previewFeatures ["fullTextSearch"]
 }
 
+use "./another.idea"
+
 prop Text { type "text" }
 prop Uppercase { format "uppercase" }
 prop Pretty { format "pretty" }
