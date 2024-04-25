@@ -7,17 +7,17 @@ import type {
 } from '../types';
 
 import Lexer from '../types/Lexer';
-import { scalar, reader } from '../definitions';
+import { scalar, scan } from '../definitions';
 
 import AbstractTree from './AbstractTree';
 
-export default class TypeTree extends AbstractTree {
+export default class EnumTree extends AbstractTree<DeclarationToken> {
   //the language used
   static definitions(lexer: Lexer) {
     super.definitions(lexer);
-    lexer.define('EnumWord', (code, index) => reader(
+    lexer.define('EnumWord', (code, index) => scan(
       '_EnumWord', 
-      /^enum$/, 
+      /^enum/, 
       code, 
       index
     ));

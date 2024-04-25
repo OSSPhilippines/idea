@@ -14,12 +14,20 @@ export type UnknownToken = {
   raw: string;
 };
 
+export type ImportToken = {
+  type: 'ImportDeclaration';
+  start: number;
+  end: number;
+  specifiers: [],
+  source: LiteralToken
+}
+
 export type SchemaToken = {
   type: 'Program';
   kind: 'schema';
   start: number;
   end: number;
-  body: DeclarationToken[];
+  body: (DeclarationToken|ImportToken)[];
 };
 
 export type DeclarationToken = {
@@ -124,6 +132,7 @@ export type FinalSchemaConfig = {
   type?: Record<string, TypeConfig>,
   model?: Record<string, ModelConfig>,
   plugin?: Record<string, PluginConfig>
+  use?: string[]
 };
 
 export type SchemaConfig = FinalSchemaConfig & {

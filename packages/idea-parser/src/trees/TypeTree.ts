@@ -7,19 +7,19 @@ import type {
 } from '../types';
 
 import Lexer from '../types/Lexer';
-import { data, reader } from '../definitions';
+import { data, scan } from '../definitions';
 
 import AbstractTree from './AbstractTree';
 
-export default class TypeTree extends AbstractTree {
+export default class TypeTree extends AbstractTree<DeclarationToken> {
   static data = [ ...data, 'CapitalIdentifier' ];
 
   //the language used
   static definitions(lexer: Lexer) {
     super.definitions(lexer);
     lexer.define('Type', (code, index) => {
-      const regexp = /^[A-Z][a-zA-Z0-9_]*((\[\])|\?)?$/;
-      const results = reader('Literal', regexp, code, index);
+      const regexp = /^[A-Z][a-zA-Z0-9_]*((\[\])|\?)?/;
+      const results = scan('Literal', regexp, code, index);
       if (results) {
         const square = code.substring(
           results.end, 
@@ -33,9 +33,9 @@ export default class TypeTree extends AbstractTree {
       }
       return results;
     }); 
-    lexer.define('TypeWord', (code, index) => reader(
+    lexer.define('TypeWord', (code, index) => scan(
       '_TypeWord', 
-      /^type$/, 
+      /^type/, 
       code, 
       index
     ));

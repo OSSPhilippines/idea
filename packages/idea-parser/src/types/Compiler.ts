@@ -6,8 +6,9 @@ import type {
   EnumConfig,
   PropConfig,
   TypeConfig,
-  ModelConfig, 
-  ObjectToken,
+  ModelConfig,
+  ObjectToken, 
+  ImportToken,
   SchemaToken,
   ColumnConfig,
   SchemaConfig,
@@ -69,22 +70,6 @@ export default class Compiler {
     const schema = this.schema(token, true);
     delete schema.prop;
     return schema as FinalSchemaConfig;
-  }
-
-  /**
-   * Converts an plugin tree into a json version
-   */
-  static plugin(token: DeclarationToken) {
-    if (token.kind !== 'plugin') {
-      throw Exception.for('Invalid Plugin');
-    }
-    //ex. ./custom-plugin
-    const name = token.declarations?.[0].id?.name as string;
-    const value: PluginConfig = {};
-    token.declarations[0].init.properties.forEach(property => {
-      value[property.key.name] = this.data(property.value);
-    });
-    return [ name, value ] as [ string, PluginConfig ];
   }
 
   /**
@@ -158,6 +143,22 @@ export default class Compiler {
   }
 
   /**
+   * Converts an plugin tree into a json version
+   */
+  static plugin(token: DeclarationToken) {
+    if (token.kind !== 'plugin') {
+      throw Exception.for('Invalid Plugin');
+    }
+    //ex. ./custom-plugin
+    const name = token.declarations?.[0].id?.name as string;
+    const value: PluginConfig = {};
+    token.declarations[0].init.properties.forEach(property => {
+      value[property.key.name] = this.data(property.value);
+    });
+    return [ name, value ] as [ string, PluginConfig ];
+  }
+
+  /**
    * Converts a prop tree into a json version
    */
   static prop(token: DeclarationToken, references: UseReferences = false) {
@@ -183,7 +184,17 @@ export default class Compiler {
 
     const schema: SchemaConfig = {};
     const references: Record<string, any> = {};
-    token.body.forEach(declaration => {
+    //deal with uses
+    const uses = token.body.filter(
+      token => token.type === 'ImportDeclaration'
+    ) as ImportToken[];
+    uses.forEach(use => {
+      schema.use = schema.use || [];
+      schema.use.push(this.use(use));
+    });
+    //deal with declarations
+    const declarations = token.body as DeclarationToken[];
+    declarations.filter(declaration => declaration.kind).forEach(declaration => {
       if (declaration.kind === 'enum') {
         schema.enum = schema.enum || {};
         const [ key, value ] = this.enum(declaration);
@@ -280,5 +291,16 @@ export default class Compiler {
     value.columns = columns;
 
     return [ name, { name, ...value } ] as [ string, TypeConfig ];
+  }
+
+  /**
+   * Converts an use tree into a json version
+   */
+  static use(token: ImportToken) {
+    if (token.type !== 'ImportDeclaration') {
+      throw Exception.for('Invalid Import');
+    }
+    //ex. ./another.idea
+    return token.source.value;
   }
 };

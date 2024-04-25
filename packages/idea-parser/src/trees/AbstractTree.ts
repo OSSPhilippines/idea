@@ -5,7 +5,7 @@ import Lexer from '../types/Lexer';
 
 import definitions from '../definitions';
 
-export default abstract class AbstractTree {
+export default abstract class AbstractTree<T = DeclarationToken> {
   //the language used
   static definitions(lexer: Lexer) {
     Object.keys(definitions).forEach((key) => {
@@ -36,7 +36,7 @@ export default abstract class AbstractTree {
   /**
    * Builds the object syntax
    */
-  public abstract parse(code: string, start: number): DeclarationToken;
+  public abstract parse(code: string, start: number): T;
 
   /**
    * Wrapper for do-try-catch-while

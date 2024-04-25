@@ -1,18 +1,22 @@
 //types
-import type { LiteralToken, DeclarationToken, ObjectToken } from '../types';
+import type { 
+  LiteralToken, 
+  DeclarationToken, 
+  ObjectToken 
+} from '../types';
 
 import Lexer from '../types/Lexer';
-import { reader } from '../definitions';
+import { scan } from '../definitions';
 
 import AbstractTree from './AbstractTree';
 
-export default class PluginTree extends AbstractTree {
+export default class PluginTree extends AbstractTree<DeclarationToken> {
   //the language used
   static definitions(lexer: Lexer) {
     super.definitions(lexer);
-    lexer.define('PluginWord', (code, index) => reader(
+    lexer.define('PluginWord', (code, index) => scan(
       '_PluginWord', 
-      /^plugin$/, 
+      /^plugin/, 
       code, 
       index
     ));

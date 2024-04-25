@@ -1,16 +1,24 @@
 //types
-import type { SchemaToken, DeclarationToken } from '../types';
+import type { 
+  SchemaToken, 
+  ImportToken, 
+  DeclarationToken 
+} from '../types';
 
 import Exception from '../types/Exception';
 import Lexer from '../types/Lexer';
 
+import AbstractTree from './AbstractTree';
 import EnumTree from './EnumTree';
 import PropTree from './PropTree';
 import TypeTree from './TypeTree';
 import ModelTree from './ModelTree';
 import PluginTree from './PluginTree';
+import UseTree from './UseTree';
 
-export default class SchemaTree {
+type BodyToken = DeclarationToken|ImportToken;
+
+export default class SchemaTree extends AbstractTree<SchemaToken> {
   //the language used
   static definitions(lexer: Lexer) {
     EnumTree.definitions(lexer);
@@ -18,7 +26,7 @@ export default class SchemaTree {
     TypeTree.definitions(lexer);
     ModelTree.definitions(lexer);
     PluginTree.definitions(lexer);
-  
+    UseTree.definitions(lexer);
     return lexer;
   }
 
@@ -29,35 +37,25 @@ export default class SchemaTree {
     return new this().parse(code);
   }
 
-  //the parser
-  protected _lexer: Lexer;
-
   //placeholder for trees
   protected _enumTree: EnumTree;
   protected _propTree: PropTree;
   protected _typeTree: TypeTree;
   protected _modelTree: ModelTree;
   protected _pluginTree: PluginTree;
+  protected _useTree: UseTree;
 
   /**
    * Creates a new parser 
    */
   constructor(lexer?: Lexer) {
-    this._lexer = lexer || (
-      this.constructor as typeof SchemaTree
-    ).definitions(new Lexer());
+    super(lexer);
     this._enumTree = new EnumTree(this._lexer);
     this._propTree = new PropTree(this._lexer);
     this._typeTree = new TypeTree(this._lexer);
     this._modelTree = new ModelTree(this._lexer);
     this._pluginTree = new PluginTree(this._lexer);
-  }
-
-  /**
-   * Consumes non code
-   */
-  noncode() {
-    while(this._lexer.optional(['whitespace', 'comment', 'note']));
+    this._useTree = new UseTree(this._lexer);
   }
 
   /**
@@ -66,13 +64,14 @@ export default class SchemaTree {
   parse(code: string, start = 0): SchemaToken {
     this._lexer.load(code, start);
     this.noncode();
-    const body: DeclarationToken[] = [];
+    const body: BodyToken[] = [];
     for (const token of this.dotryall(
       () => this._enumTree.enum(),
       () => this._propTree.prop(),
       () => this._typeTree.type(),
       () => this._modelTree.model(),
-      () => this._pluginTree.plugin()
+      () => this._pluginTree.plugin(),
+      () => this._useTree.use()
     )) {
       body.push(token);
       this.noncode();
@@ -102,8 +101,8 @@ export default class SchemaTree {
   /**
    * Wrapper for do-try-catch-while
    */
-  protected *dotryall(...all: (() => DeclarationToken|undefined)[]) {
-    let token: DeclarationToken|undefined;
+  protected *dotryall(...all: (() => BodyToken|undefined)[]) {
+    let token: BodyToken|undefined;
     do {
       token = undefined;
       for (const callback of all) {

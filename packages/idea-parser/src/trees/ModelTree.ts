@@ -4,15 +4,15 @@ import { DeclarationToken, IdentifierToken, PropertyToken } from '../types';
 import Lexer from '../types/Lexer';
 import TypeTree from './TypeTree';
 
-import { reader } from '../definitions';
+import { scan } from '../definitions';
 
 export default class ModelTree extends TypeTree {
   //the language used
   static definitions(lexer: Lexer) {
     super.definitions(lexer);
-    lexer.define('ModelWord', (code, index) => reader(
+    lexer.define('ModelWord', (code, index) => scan(
       '_ModelWord', 
-      /^model$/, 
+      /^model/, 
       code, 
       index
     ));

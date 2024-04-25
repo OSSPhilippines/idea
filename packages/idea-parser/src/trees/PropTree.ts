@@ -5,18 +5,18 @@ import type {
 } from '../types';
 
 import Lexer from '../types/Lexer';
-import { reader } from '../definitions';
+import { scan } from '../definitions';
 
 import AbstractTree from './AbstractTree';
 
 
-export default class PropTree extends AbstractTree {
+export default class PropTree extends AbstractTree<DeclarationToken> {
   //the language used
   static definitions(lexer: Lexer) {
     super.definitions(lexer);
-    lexer.define('PropWord', (code, index) => reader(
+    lexer.define('PropWord', (code, index) => scan(
       '_PropWord', 
-      /^prop$/, 
+      /^prop/, 
       code, 
       index
     ));
