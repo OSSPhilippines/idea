@@ -13,7 +13,7 @@
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://marketplace.visualstudio.com/items?itemName=ossph.idea-langugage">Code Extension</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://github.com/OSSPhilippines/idea/blob/main/docs/contribute.md">Contribute</a>
+  <a href="https://github.com/OSSPhilippines/idea/blob/main/docs/plugins.md">Plugins</a>
   <br />
   <hr />
 </div>
@@ -115,9 +115,9 @@ following example.
 
 ```js
 //my.idea
-plugin "@ossph/idea-typescript" {
+plugin "idea-ts" {
   ts true
-  output "./src/types.ts"
+  output "./modules/[name]/types"
 }
 // ... your idea ...
 // model Product ...
@@ -142,3 +142,4 @@ Learn more:
 
  - [Form an Idea](//github.com/OSSPhilippines/idea/blob/main/docs/schema.md)
  - [Transform an Idea](//github.com/OSSPhilippines/idea/blob/main/docs/transform.md)
+ - [Plugins](//github.com/OSSPhilippines/idea/blob/main/docs/plugins.md)
