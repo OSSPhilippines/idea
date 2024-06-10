@@ -1,6 +1,6 @@
 {
   "name": "@ossph/idea-transformer",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "license": "MIT",
   "description": "A programmatical command line interface used by projects and that calls on external transformers to make relevant code",
   "author": "Chris <chris@incept.asia>",
@@ -16,7 +16,7 @@
     "test": "nyc ts-mocha tests/*.test.ts"
   },
   "dependencies": {
-    "@ossph/idea-parser": "0.1.5"
+    "@ossph/idea-parser": "0.1.6"
   },
   "devDependencies": {
     "@types/chai": "4.3.5",

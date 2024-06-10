@@ -1,6 +1,6 @@
 {
   "name": "@ossph/idea",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "license": "MIT",
   "description": "An open source schema file standard and generator",
   "author": "Chris <chris@incept.asia>",
@@ -16,8 +16,8 @@
     "build:files": "cp ./README.md ./dist/ && cp ./package.json ./dist/ && cp ./LICENSE ./dist/"
   },
   "dependencies": {
-    "@ossph/idea-parser": "0.1.5",
-    "@ossph/idea-transformer": "0.1.5"
+    "@ossph/idea-parser": "0.1.6",
+    "@ossph/idea-transformer": "0.1.6"
   },
   "devDependencies": {
     "@types/node": "20.2.5",

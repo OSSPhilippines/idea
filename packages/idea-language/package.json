@@ -2,7 +2,7 @@
 	"name": "idea-langugage",
 	"displayName": "Idea",
 	"description": "Adds syntax highlighting, formatting, auto-completion, jump-to-definition and linting for .idea files.",
-	"version": "0.1.5",
+	"version": "0.1.6",
 	"license": "MIT",
 	"icon": "idea.png",
 	"repository": {
@@ -74,7 +74,7 @@
 		"test": "sh ./scripts/e2e.sh"
 	},
 	"dependencies": {
-		"@ossph/idea-parser": "0.1.5"
+		"@ossph/idea-parser": "0.1.6"
 	},
 	"devDependencies": {
 		"@types/mocha": "^9.1.0",
