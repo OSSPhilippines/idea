@@ -1,3 +1,7 @@
+prop Config {
+  module "another-idea"
+}
+
 enum Roles {
   OWNER "owner"
   MODERATOR "moderator"
