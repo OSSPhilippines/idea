@@ -24,6 +24,7 @@ describe('Transformer Tests', () => {
     expect(actual.type && 'Address' in actual.type).to.be.true;
     expect(actual.type && 'Contact' in actual.type).to.be.true;
     expect(actual.enum && 'Roles' in actual.enum).to.be.true;
+    expect(actual.prop && 'Config' in actual.prop).to.be.true;
   }).timeout(20000);
 
   it('Should make enums', () => {

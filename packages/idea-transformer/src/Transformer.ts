@@ -54,6 +54,9 @@ export default class Transformer<T extends {}> {
           const parent = transformer.schema;
           //soft merge the object values of enum, 
           //type, model from parent to schema
+          if (parent.prop) {
+            schema.prop = { ...parent.prop, ...schema.prop };
+          }
           if (parent.enum) {
             schema.enum = { ...parent.enum, ...schema.enum };
           }
@@ -67,7 +70,6 @@ export default class Transformer<T extends {}> {
       }
       //finalize schema
       delete schema.use;
-      delete schema.prop;
       //set schema
       this._schema = schema;
     }
