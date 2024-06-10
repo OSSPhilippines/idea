@@ -4,7 +4,9 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - uses: wow-actions/auto-comment@v1.1.2
+      - 
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        uses: wow-actions/auto-comment@v1.1.2
         with:
           GITHUB_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
           issuesOpened: |
